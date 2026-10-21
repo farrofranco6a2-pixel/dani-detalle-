@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 Razones Por Las Que Te Amo</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                        }
+                    },
+                    fontFamily: {
+                        cursive: ['"Great Vibes"', 'cursive'],
+                        handwritten: ['"Caveat"', 'cursive'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(244, 63, 94, 0.4);
+        }
+        .text-glow {
+            text-shadow: 0 0 12px rgba(244, 63, 94, 0.3);
+        }
+        
+        @keyframes floatHeart {
+            0% { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatHeart 8s linear infinite;
+        }
+
+        @keyframes cardPop {
+            0% { transform: scale(0.9) translateY(10px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .animate-pop {
+            animation: cardPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(254, 205, 211, 0.2);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(244, 63, 94, 0.4);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(244, 63, 94, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-rose-50 via-pink-50 to-red-100 min-h-screen font-sans text-gray-800 antialiased overflow-x-hidden selection:bg-brand-200 selection:text-brand-900">
+
+    <!-- Floating Background Hearts Canvas Layer -->
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Header Section -->
+    <header class="relative z-10 pt-10 pb-6 px-4 text-center max-w-4xl mx-auto">
+        <div class="inline-block mb-3 px-4 py-1.5 bg-rose-100/80 backdrop-blur-md rounded-full border border-rose-200 text-brand-700 text-sm font-medium tracking-wide shadow-sm">
+            ✨ Un regalo especial con todo mi amor ✨
+        </div>
+        <h1 class="font-cursive text-6xl md:text-7xl lg:text-8xl text-brand-600 text-glow mb-2">
+            100 Razones Por Las Que Te Amo
+        </h1>
+        <p class="text-gray-600 text-base md:text-lg max-w-xl mx-auto font-medium">
+            Cada día a tu lado me da mil motivos más, pero aquí reuní 100 de mis razones favoritas.
+        </p>
+
+        <!-- Dynamic Counter & Progress Bar -->
+        <div class="mt-8 max-w-md mx-auto bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-rose-100">
+            <div class="flex justify-between items-center text-xs font-semibold text-gray-600 mb-2">
+                <span>Tu Progreso de Descubrimiento</span>
+                <span id="progress-text" class="text-brand-600">0 de 100 reveladas</span>
+            </div>
+            <div class="w-full bg-rose-100 rounded-full h-3 overflow-hidden p-0.5">
+                <div id="progress-bar" class="bg-gradient-to-r from-brand-400 to-brand-600 h-full rounded-full transition-all duration-500 w-0"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="relative z-10 max-w-5xl mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Left Column: Surprise Generator & Audio Controls -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+
+            <!-- Card Container -->
+            <div class="relative bg-white/90 backdrop-blur-md border-2 border-rose-200 rounded-3xl p-8 shadow-xl glow-effect text-center min-h-[380px] flex flex-col justify-between transition-all duration-300">
+                
+                <!-- Top Card Bar -->
+                <div class="flex justify-between items-center border-b border-rose-100 pb-4">
+                    <span id="reason-number" class="text-xs font-bold uppercase tracking-wider text-brand-500 bg-brand-50 px-3 py-1 rounded-full border border-rose-200">
+                        Razón #--
+                    </span>
+                    <button id="fav-btn" onclick="toggleFavorite()" class="text-gray-300 hover:text-rose-500 transition-colors p-2 rounded-full hover:bg-rose-50" title="Marcar como favorita">
+                        <svg id="fav-icon" class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Main Displayed Content -->
+                <div id="card-content" class="my-6 px-2 flex flex-col items-center justify-center flex-grow">
+                    <div id="default-state" class="flex flex-col items-center text-rose-300 space-y-3 py-8">
+                        <svg class="w-16 h-16 animate-bounce text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                        <p class="text-gray-500 font-medium text-lg">Haz clic abajo para descubrir tu primera razón</p>
+                    </div>
+                    <div id="reason-display" class="hidden animate-pop">
+                        <p id="reason-text" class="font-handwritten text-3xl md:text-4xl text-gray-800 leading-relaxed font-semibold">
+                            "Tu sonrisa ilumina absolutamente todo a mi alrededor."
+                        </p>
+                        <p id="reason-category" class="mt-4 text-xs font-semibold text-brand-600 bg-rose-50 inline-block px-3 py-1 rounded-md border border-rose-200">
+                            Categoría
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottom Interactive Trigger Buttons -->
+                <div class="pt-4 border-t border-rose-100 flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <button id="surprise-btn" onclick="generateSurpriseReason()" class="w-full sm:w-auto flex-1 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2 group">
+                        <span class="text-xl group-hover:rotate-12 transition-transform">🎁</span>
+                        <span class="text-base tracking-wide">¡Dame una Razón Sorpresa!</span>
+                    </button>
+                    
+                    <button id="auto-btn" onclick="toggleAutoPlay()" class="w-full sm:w-auto bg-white hover:bg-rose-50 text-brand-600 border border-rose-300 font-semibold py-4 px-5 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-sm shadow-sm">
+                        <span id="auto-icon">▶</span>
+                        <span id="auto-text">Modo Automático</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Romantic Sound & Ambiance Widget -->
+            <div class="bg-white/70 backdrop-blur-sm border border-rose-100 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-brand-600 font-bold">
+                        🎵
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-800">Música de Fondo Romántica</h4>
+                        <p class="text-xs text-gray-500">Música instrumental suave</p>
+                    </div>
+                </div>
+                <button id="audio-toggle" onclick="toggleAudio()" class="px-4 py-2 bg-rose-100 hover:bg-rose-200 text-brand-700 text-xs font-bold rounded-xl transition-colors">
+                    Activar Música
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Column: Interactive Grid & Search Explorer -->
+        <section class="lg:col-span-5 bg-white/90 backdrop-blur-md border border-rose-200 rounded-3xl p-6 shadow-lg h-[520px] flex flex-col">
+            <div class="mb-4">
+                <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
+                    <span>🗺️</span> Explorador de Razones
+                </h3>
+                <p class="text-xs text-gray-500">Haz clic en cualquier número para leer la razón directamente.</p>
+            </div>
+
+            <!-- Search & Filter Bar -->
+            <div class="space-y-3 mb-4">
+                <input type="text" id="search-input" oninput="filterGrid()" placeholder="Buscar en las razones..." class="w-full text-xs px-3 py-2.5 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-brand-400 bg-rose-50/50">
+                <div class="flex gap-2 text-xs font-medium">
+                    <button onclick="setFilter('all')" id="filter-all" class="flex-1 py-1.5 rounded-lg bg-brand-500 text-white font-bold transition-all">Todas</button>
+                    <button onclick="setFilter('favs')" id="filter-favs" class="flex-1 py-1.5 rounded-lg bg-rose-100 text-brand-700 hover:bg-rose-200 transition-all">Favoritas</button>
+                    <button onclick="setFilter('unseen')" id="filter-unseen" class="flex-1 py-1.5 rounded-lg bg-rose-100 text-brand-700 hover:bg-rose-200 transition-all">Sin Ver</button>
+                </div>
+            </div>
+
+            <!-- Numbers Grid Scrollable -->
+            <div id="reasons-grid" class="grid grid-cols-5 gap-2 overflow-y-auto custom-scrollbar pr-1 flex-grow">
+                <!-- Grid buttons dynamically injected here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Message -->
+    <footer class="text-center py-8 text-xs text-gray-500 border-t border-rose-200/60 bg-white/40">
+        Hecho con ❤️ para la persona más maravillosa del mundo.
+    </footer>
+
+    <!-- App Logic JavaScript -->
+    <script>
+        // Data Set: 100 Heartfelt Reasons Categorized
+        const reasons = [
+            { id: 1, text: "Por la forma tan dulce en la que me miras cuando crees que no me doy cuenta." },
+            { id: 2, text: "Porque tu risa es literalmente mi sonido favorito en todo el universo." },
+            { id: 3, text: "Por cómo me haces sentir seguro y en paz incluso en los días más difíciles." },
+            { id: 4, text: "Por la bondad y empatía gigante que tienes con todas las personas a tu alrededor." },
+            { id: 5, text: "Porque hacer planes a tu lado siempre se siente como una gran aventura." },
+            { id: 6, text: "Por cómo nos tomamos las manos como si estuvieran hechas exactamente a la medida." },
+            { id: 7, text: "Porque me impulsas cada día a sacar la mejor versión de mí mismo." },
+            { id: 8, text: "Por tus abrazos calientitos que tienen la capacidad de curarlo todo." },
+            { id: 9, text: "Por tu inteligencia y la perspectiva tan única que tienes de las cosas." },
+            { id: 10, text: "Porque celebras mis pequeños y grandes logros como si fueran tuyos." },
+            { id: 11, text: "Por cómo te ríes como camionero JAJAJAJA." },
+            { id: 12, text: "Porque contigo el silencio nunca es incómodo, sino tranquilo." },
+            { id: 13, text: "Por tus mensajes mañaneros que me alegran el día entero." },
+            { id: 14, text: "Porque tienes el corazón más noble e intuitivo que conozco." },
+            { id: 15, text: "Por la forma en que te atacas conmigo. ." },
+            { id: 16, text: "Porque volver a verte siempre se siente como regresar a casa." },
+            { id: 17, text: "Por todas las bromas que solo tú y yo entendemos." },
+            { id: 18, text: "Por la manera en que tus besos tienen el poder de detener el tiempo." },
+            { id: 19, text: "Porque contigo puedo ser 100% yo mismo sin miedo a ser juzgado." },
+            { id: 20, text: "Por la carita hermosa que pones cuando estás concentrada en algo." },
+            { id: 21, text: "Porque hasta la rutina más aburrida se vuelve divertida si estás tú." },
+            { id: 22, text: "Por tu paciencia infinita y tu comprensión en todo momento." },
+            { id: 23, text: "Por el perfume o aroma único que dejas cuando me tocas." },
+            { id: 24, text: "Porque tienes la risa más contagiosa del planeta entero." },
+            { id: 25, text: "Por los abrazos espontáneos que me das de la nada." },
+            { id: 26, text: "Porque respetas y apoyas mis sueños sin dudar jamás de mi capacidad." },
+            { id: 27, text: "Por cómo recuerdas los detalles pequeños que te hago." },
+            { id: 28, text: "Porque me enseñas algo nuevo cada vez que conversamos." },
+            { id: 29, text: "Por la calidez de tus labios cuando nos saludamos o despedimos." },
+            { id: 30, text: "Porque cualquier lugar del mundo es perfecto si estás tú a mi lado." },
+            { id: 31, text: "Por tu valentía para afrontar los problemas con madurez." },
+            { id: 32, text: "Por tus bromas graciosas e improvisadas cuando estás feliz." },
+            { id: 33, text: "Porque no importa qué tan malo sea mi día, tu voz me da paz inmediatamente." },
+            { id: 34, text: "Por tus fotos bonitas que me alegran cada vez que las miro en mi teléfono." },
+            { id: 35, text: "Porque eres mi mejor amiga, mi cómplice y mi gran amor al mismo tiempo." },
+            { id: 36, text: "Por cómo me cuidas cuando estoy enfermo o cansado." },
+            { id: 37, text: "Por las miradas cómplices que nos damos en la habitación." },
+            { id: 38, text: "Porque tus ideas e historias siempre me resultan interesantes." },
+            { id: 39, text: "Por la forma suave e inconfundible con la que me acaricias la carita." },
+            { id: 40, text: "Porque juntos hacemos el equipo más fuerte y bonito que existe." },
+            { id: 41, text: "Por tu humildad y tu manera tan transparente de ser." },
+            { id: 42, text: "Porque tienes un gusto genial para compartir música de kpop JAJAJA." },
+            { id: 43, text: "Por cómo iluminas mi vida." },
+            { id: 44, text: "Porque me haces reír hasta que me duele la panza." },
+            { id: 45, text: "Por tus detalles hechos a mano llenos de amor y dedicación." },
+            { id: 46, text: "Porque me inspiras a ser una persona mucho más comprensiva." },
+            { id: 47, text: "Por cómo apoyas la cabeza en mi hombro cuando estamos tranquilos." },
+            { id: 48, text: "Porque no hay un solo día en que no me saque una sonrisa un pensamiento tuyo." },
+            { id: 49, text: "Por la forma en que buscas mi mano para caminar por la calle." },
+            { id: 50, text: "Porque compartimos la misma visión para construir un futuro juntos." },
+            { id: 51, text: "Por tu perseverancia admirable cuando te propones una meta." },
+            { id: 52, text: "Por cómo brillan tus ojos cuando hablas de algo que te emociona." },
+            { id: 53, text: "Porque hasta ir a hacer las compras juntos es divertido contigo." },
+            { id: 54, text: "Por la calidez con la que tratas a mi familia y seres queridos." },
+            { id: 55, text: "Porque sabes cómo calmar mis ansiedades con solo una palabra bonita." },
+            { id: 56, text: "Por tus reacciones tiernas a las cosas pequeñas." },
+            { id: 57, text: "Porque eres la primera persona a la que quiero contarle buenas noticias." },
+            { id: 58, text: "Por las caminatas largas conversando de la vida sin darnos cuenta del tiempo." },
+            { id: 59, text: "Por cómo mantienes tu esencia pura sin importar las circunstancias." },
+            { id: 60, text: "Porque me haces sentir extremadamente valorado y amado." },
+            { id: 61, text: "Por tu manera de abrazarme por la espalda por sorpresa." },
+            { id: 62, text: "Porque contigo los días lluviosos o fríos son mis favoritos." },
+            { id: 63, text: "Por lo generosa que eres con tu tiempo y con tu afecto." },
+            { id: 64, text: "Porque amarte es lo más fácil y natural que he hecho jamás." },
+            { id: 65, text: "Por tu curiosidad por aprender cosas nuevas constantemente." },
+            { id: 66, text: "Por las caricias suaves en mi espalda cuando nos acostamos en mi camita a descansar." },
+            { id: 67, text: "Porque tienes un sentido de la justicia impecable." },
+            { id: 68, text: "Por cómo te ves despeinada y en pijama por las mañanas: absolutamente hermosa." },
+            { id: 69, text: "Por los apodos cariñosos que tenemos entre los dos." },
+            { id: 70, text: "Porque me ayudas a ver el lado positivo de cualquier situación adversa." },
+            { id: 71, text: "Por tus besos en la frente que transmiten tanto respeto y ternura." },
+            { id: 72, text: "Porque me encanta hacerte sonreír cuando estás seria." },
+            { id: 73, text: "Por cómo cuidas a las mascotas y plantas con tanto cariño." },
+            { id: 74, text: "Porque haces del mundo un lugar mucho más brillante solo con tu presencia." },
+            { id: 75, text: "Por el esfuerzo constante que pones para que nuestra relación sea sana y bonita." },
+            { id: 76, text: "Por la seguridad con la que tomas decisiones importantes." },
+            { id: 77, text: "Porque tienes un gusto maravilloso para elegir regalos significativos." },
+            { id: 78, text: "Por los postres que preparamos y disfrutamos juntos." },
+            { id: 79, text: "Porque contigo aprendí lo que significa el verdadero amor incondicional." },
+            { id: 80, text: "Por la calma infinita que me transmite tu voz ." },
+            { id: 81, text: "Por tus gestos graciosos que solo yo logro captar." },
+            { id: 82, text: "Porque sabes guardar secretos y ser el cofre de mis misterios." },
+            { id: 83, text: "Por cómo apoyas mis hobbies e intereses personales." },
+            { id: 84, text: "Por cómo me buscas con la pierna o la mano para sentir que estamos cerca." },
+            { id: 85, text: "Porque tus recomendaciones de emprendimientos, libros y música siempre son un acierto." },
+            { id: 86, text: "Por cómo defiendes nuestro amor ante todo y todos." },
+            { id: 87, text: "Porque me haces querer ser mejor pareja cada día que pasa." },
+            { id: 88, text: "Por la emoción desbordante que sientes cuando algo bonito sucede." },
+            { id: 89, text: "Por cómo te ves hermosa, me dejas sin aliento." },
+            { id: 90, text: "Por las noches largas hablando de cualquier tontería del mundo." },
+            { id: 91, text: "Porque a tu lado he vivido los mejores recuerdos de mi vida." },
+            { id: 92, text: "Por cómo me enseñas a ser más paciente y empático." },
+            { id: 93, text: "Por tus sorpresas que me dejan totalmente con la boca abierta." },
+            { id: 94, text: "Porque no imagino una historia más bonita que la que estamos escribiendo juntos." },
+            { id: 95, text: "Por cómo nos entendemos con solo una mirada en medio de mucha gente." },
+            { id: 96, text: "Por la sinceridad absoluta que pones en cada palabra." },
+            { id: 97, text: "Por la dulzura infinita con la que pronuncias mi nombre." },
+            { id: 98, text: "Porque eres la coincidencia más hermosa que me ha pasado en la vida." },
+            { id: 99, text: "Por todo lo que hemos superado juntos y lo fuertes que nos hemos vuelto." },
+            { id: 100, text: "Simplemente por ser tú: única, maravillosa, perfecta para mí e irremplazable"},
+        ];
+        
+        // App State Persisted with localStorage
+        let currentReasonId = null;
+        let seenReasons = new Set(JSON.parse(localStorage.getItem('seen_reasons') || '[]'));
+        let favoriteReasons = new Set(JSON.parse(localStorage.getItem('fav_reasons') || '[]'));
+        let activeFilter = 'all';
+        let autoPlayInterval = null;
+
+        // Web Audio API Ambient Sound Generator
+        let audioCtx = null;
+        let isPlayingAudio = false;
+        let audioOscillator = null;
+
+        function saveState() {
+            localStorage.setItem('seen_reasons', JSON.stringify([...seenReasons]));
+            localStorage.setItem('fav_reasons', JSON.stringify([...favoriteReasons]));
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const count = seenReasons.size;
+            const percentage = (count / 100) * 100;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-text').innerText = `${count} de 100 reveladas (${Math.round(percentage)}%)`;
+        }
+
+        function showReason(reason) {
+            currentReasonId = reason.id;
+            seenReasons.add(reason.id);
+            saveState();
+
+            document.getElementById('default-state').classList.add('hidden');
+            const display = document.getElementById('reason-display');
+            display.classList.remove('hidden');
+            
+            // Re-trigger animation
+            display.classList.remove('animate-pop');
+            void display.offsetWidth; // trigger reflow
+            display.classList.add('animate-pop');
+
+            document.getElementById('reason-number').innerText = `Razón #${reason.id}`;
+            document.getElementById('reason-text').innerText = `"${reason.text}"`;
+            document.getElementById('reason-category').innerText = reason.cat || 'Te amo';
+
+            updateFavIcon();
+            highlightGridButton(reason.id);
+        }
+
+        function generateSurpriseReason() {
+            // Pick random reason prioritizing unseen ones if available
+            const unseen = reasons.filter(r => !seenReasons.has(r.id));
+            let selected;
+            if (unseen.length > 0 && Math.random() > 0.3) {
+                selected = unseen[Math.floor(Math.random() * unseen.length)];
+            } else {
+                selected = reasons[Math.floor(Math.random() * reasons.length)];
+            }
+
+            showReason(selected);
+            triggerConfetti();
+        }
+
+        function toggleFavorite() {
+            if (!currentReasonId) return;
+            if (favoriteReasons.has(currentReasonId)) {
+                favoriteReasons.delete(currentReasonId);
+            } else {
+                favoriteReasons.add(currentReasonId);
+            }
+            saveState();
+            updateFavIcon();
+            filterGrid();
+        }
+
+        function updateFavIcon() {
+            const favBtn = document.getElementById('fav-btn');
+            if (currentReasonId && favoriteReasons.has(currentReasonId)) {
+                favBtn.classList.remove('text-gray-300');
+                favBtn.classList.add('text-rose-500');
+            } else {
+                favBtn.classList.remove('text-rose-500');
+                favBtn.classList.add('text-gray-300');
+            }
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 35,
+                    spread: 60,
+                    origin: { y: 0.7 },
+                    colors: ['#f43f5e', '#fb7185', '#fda4af', '#e11d48']
+                });
+            }
+        }
+
+        // Render Grid
+        function renderGrid() {
+            const grid = document.getElementById('reasons-grid');
+            grid.innerHTML = '';
+
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+
+            reasons.forEach(r => {
+                const matchesSearch = r.text.toLowerCase().includes(searchTerm) || r.id.toString().includes(searchTerm);
+                let matchesFilter = true;
+
+                if (activeFilter === 'favs') matchesFilter = favoriteReasons.has(r.id);
+                if (activeFilter === 'unseen') matchesFilter = !seenReasons.has(r.id);
+
+                if (matchesSearch && matchesFilter) {
+                    const btn = document.createElement('button');
+                    btn.id = `grid-btn-${r.id}`;
+                    btn.onclick = () => showReason(r);
+                    btn.className = `h-10 text-xs font-bold rounded-xl transition-all border flex items-center justify-center relative ${
+                        seenReasons.has(r.id)
+                            ? 'bg-rose-100/70 border-rose-200 text-brand-700 hover:bg-rose-200'
+                            : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-rose-50'
+                    } ${currentReasonId === r.id ? 'ring-2 ring-brand-500 border-brand-500 bg-brand-500 text-white hover:bg-brand-600' : ''}`;
+
+                    btn.innerHTML = `${r.id} ${favoriteReasons.has(r.id) ? '<span class="text-[9px] absolute top-0.5 right-1">❤️</span>' : ''}`;
+                    grid.appendChild(btn);
+                }
+            });
+        }
+
+        function highlightGridButton(id) {
+            renderGrid();
+            const btn = document.getElementById(`grid-btn-${id}`);
+            if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function filterGrid() {
+            renderGrid();
+        }
+
+        function setFilter(filter) {
+            activeFilter = filter;
+            ['all', 'favs', 'unseen'].forEach(f => {
+                const el = document.getElementById(`filter-${f}`);
+                if (f === filter) {
+                    el.className = 'flex-1 py-1.5 rounded-lg bg-brand-500 text-white font-bold transition-all';
+                } else {
+                    el.className = 'flex-1 py-1.5 rounded-lg bg-rose-100 text-brand-700 hover:bg-rose-200 transition-all';
+                }
+            });
+            filterGrid();
+        }
+
+        function toggleAutoPlay() {
+            const autoBtnText = document.getElementById('auto-text');
+            const autoIcon = document.getElementById('auto-icon');
+
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                autoBtnText.innerText = "Modo Automático";
+                autoIcon.innerText = "▶";
+            } else {
+                generateSurpriseReason();
+                autoPlayInterval = setInterval(generateSurpriseReason, 5000);
+                autoBtnText.innerText = "Pausar Automático";
+                autoIcon.innerText = "⏸";
+            }
+        }
+
+        // Web Audio Romantic Pad Synthesizer
+        function toggleAudio() {
+            const btn = document.getElementById('audio-toggle');
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (isPlayingAudio) {
+                if (audioOscillator) audioOscillator.stop();
+                isPlayingAudio = false;
+                btn.innerText = "Activar Música";
+                btn.className = "px-4 py-2 bg-rose-100 hover:bg-rose-200 text-brand-700 text-xs font-bold rounded-xl transition-colors";
+            } else {
+                audioCtx.resume();
+                playRomanticChords();
+                isPlayingAudio = true;
+                btn.innerText = "Pausar Música";
+                btn.className = "px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold rounded-xl transition-colors shadow-sm";
+            }
+        }
+
+        function playRomanticChords() {
+            const notes = [261.63, 329.63, 392.00, 523.25]; // C major soft harmony chord
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+
+            notes.forEach(freq => {
+                const osc = audioCtx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.connect(gain);
+                osc.start();
+            });
+
+            gain.connect(audioCtx.destination);
+        }
+
+        // Background Floating Hearts Spawner
+        function createFloatingHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartIcons = ['❤️', '💖', '💕', '🌸', '✨'];
+
+            for (let i = 0; i < 18; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerText = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.animationDuration = `${6 + Math.random() * 6}s`;
+                heart.style.animationDelay = `${Math.random() * 5}s`;
+                heart.style.fontSize = `${14 + Math.random() * 16}px`;
+                container.appendChild(heart);
+            }
+        }
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            renderGrid();
+            updateProgressBar();
+            createFloatingHearts();
+        });
+    </script>
+</body>
+</html>
